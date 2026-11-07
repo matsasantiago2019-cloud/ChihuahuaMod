@@ -1,0 +1,43 @@
+plugins {
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'eclipse'
+    id 'maven-publish'
+}
+group = 'com.mati.chihuahuamod'
+version = '1.0.0'
+base { archivesName = 'ChihuahuaMod' }
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+
+minecraft {
+    mappings channel: 'official', version: '26.3'
+    copyIdeResources = true
+    runs {
+        configureEach {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'info'
+            mods { chihuahuamod { source sourceSets.main } }
+        }
+        client {}
+        server { args '--nogui' }
+    }
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:26.3-66.1.5'
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    var replaceProperties = [
+        minecraft_version: '26.3',
+        forge_version: '66.1.5',
+        mod_id: 'chihuahuamod',
+        mod_name: 'Chihuahua Mod',
+        mod_license: 'MIT',
+        mod_version: project.version,
+        mod_authors: 'Mati',
+        mod_description: 'Adds a tameable Chihuahua companion to Minecraft.'
+    ]
+    inputs.properties replaceProperties
+    filesMatching(['META-INF/mods.toml']) { expand replaceProperties }
+}
